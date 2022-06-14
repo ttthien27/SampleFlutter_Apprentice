@@ -1,69 +1,62 @@
 import 'package:flutter/material.dart';
+
 import '../fooderlich_theme.dart';
+import '../models/models.dart';
 
 class Card1 extends StatelessWidget {
-  const Card1({Key? key}) : super(key: key);
+  final ExploreRecipe recipe;
 
-  //1
-  final String category = 'Editor\'s Choice';
-  final String title = 'The Art of Dough';
-  final String description = 'Learn to make the perfect bread.';
-  final String chef = 'Ray Wenderlich';
+  const Card1({
+    Key? key,
+    required this.recipe,
+  }) : super(key: key);
 
-  // 2
   @override
   Widget build(BuildContext context) {
-    // 3
     return Center(
       child: Container(
-        // ignore: sort_child_properties_last
         child: Stack(
           children: [
             Text(
-              category,
+              recipe.subtitle,
               style: FooderlichTheme.darkTextTheme.bodyText1,
             ),
-        Positioned(
-            top: 20,
-            child: Text(
-              title,
-              style: FooderlichTheme.darkTextTheme.headline5,
+            Positioned(
+              child: Text(
+                recipe.title,
+                style: FooderlichTheme.darkTextTheme.headline2,
+              ),
+              top: 20,
             ),
-        ),
-        Positioned(
-            bottom: 30,      right: 0,
-            child: Text(
-              description,
-              style: FooderlichTheme.darkTextTheme.bodyText1,
+            Positioned(
+              child: Text(
+                recipe.message,
+                style: FooderlichTheme.darkTextTheme.bodyText1,
+              ),
+              bottom: 30,
+              right: 0,
             ),
-        ),
-        Positioned(
-            bottom: 10,      right: 0,
-            child: Text(
-              chef,
-              style: FooderlichTheme.darkTextTheme.bodyText1,
-            ),
-        ),
+            Positioned(
+              child: Text(
+                recipe.authorName,
+                style: FooderlichTheme.darkTextTheme.bodyText1,
+              ),
+              bottom: 10,
+              right: 0,
+            )
           ],
         ),
-        // 1
         padding: const EdgeInsets.all(16),
-        //2
         constraints: const BoxConstraints.expand(
           width: 350,
           height: 450,
         ),
-        //3
-        decoration: const BoxDecoration(
-          // 4
+        decoration: BoxDecoration(
           image: DecorationImage(
-            //5
-            image: AssetImage('assets/mag1.png'),
-            //6
+            image: AssetImage(recipe.backgroundImage),
             fit: BoxFit.cover,
           ),
-          //8
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
       ),
     );
