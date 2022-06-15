@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import 'fooderlich_theme.dart';
-import'home.dart';
+import 'package:flutter/services.dart';
 
-void main() {
-  runApp(const Fooderlich());
+import 'ui/main_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
 }
 
-class Fooderlich extends StatelessWidget {
-  // 2
-  const Fooderlich({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final theme = FooderlichTheme.dark();
-    // TODO: Apply Home widget
-    // 3
     return MaterialApp(
-      theme: theme,
-      title: 'Fooderlich',
-      home: const Home(),
+      title: 'Recipes',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const MainScreen(),
     );
   }
 }
