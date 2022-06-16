@@ -1,38 +1,23 @@
 import 'models/models.dart';
 
 abstract class Repository {
+
   // 1
-  List<Recipe> findAllRecipes();
-
+  Stream<List<Recipe>> watchAllRecipes();
 // 2
-  Recipe findRecipeById(int id);
+  Stream<List<Ingredient>> watchAllIngredients();
 
-// 3
-  List<Ingredient> findAllIngredients();
-
-// 4
-  List<Ingredient> findRecipeIngredients(int recipeId);
-
-  // 5
-  int insertRecipe(Recipe recipe);
-
-  // 6
-  List<int> insertIngredients(List<Ingredient> ingredients);
-
-  // 7
-  void deleteRecipe(Recipe recipe);
-
-  // 8
-  void deleteIngredient(Ingredient ingredient);
-
-  // 9
-  void deleteIngredients(List<Ingredient> ingredients);
-
-  // 10
-  void deleteRecipeIngredients(int recipeId);
-
-  // 11
+  Future<List<Recipe>> findAllRecipes();
+  Future<Recipe> findRecipeById(int id);
+  Future<List<Ingredient>> findAllIngredients();
+  Future<List<Ingredient>> findRecipeIngredients(int recipeId);
+  Future<int> insertRecipe(Recipe recipe);
+  Future<List<int>> insertIngredients(List<Ingredient>
+  ingredients);
+  Future<void> deleteRecipe(Recipe recipe);
+  Future<void> deleteIngredient(Ingredient ingredient);
+  Future<void> deleteIngredients(List<Ingredient> ingredients);
+  Future<void> deleteRecipeIngredients(int recipeId);
   Future init();
-  // 12
   void close();
 }

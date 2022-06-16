@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/recipe.dart';
 import '../../data/memory_repository.dart';
+import '../../data/repository.dart';
 
 class MyRecipesList extends StatefulWidget {
   const MyRecipesList({Key? key}) : super(key: key);
@@ -15,13 +16,6 @@ class MyRecipesList extends StatefulWidget {
 class _MyRecipesListState extends State<MyRecipesList> {
   List<Recipe> recipes = [];
 
-  // TODO: Remove initState()
-  /*@override
-  void initState() {
-    super.initState();
-    recipes = <String>[];
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -31,11 +25,19 @@ class _MyRecipesListState extends State<MyRecipesList> {
   }
 
   Widget _buildRecipeList(BuildContext context) {
-    return Consumer<MemoryRepository>(
-      builder: (context, repository, child) {
-        recipes = repository.findAllRecipes();
-
-        return ListView.builder(
+    // 1
+    final repository = Provider.of<Repository>(context, listen: false);
+// 2
+    return StreamBuilder<List<Recipe>>(
+      // 3
+      stream: repository.watchAllRecipes(),
+      // 4
+      builder: (context, AsyncSnapshot<List<Recipe>> snapshot) {
+        // 5
+        if (snapshot.connectionState == ConnectionState.active) {
+          // 6
+          final recipes = snapshot.data ?? [];
+          return ListView.builder(
             itemCount: recipes.length,
             itemBuilder: (BuildContext context, int index) {
               final recipe = recipes[index];
@@ -83,18 +85,19 @@ class _MyRecipesListState extends State<MyRecipesList> {
                   ],
                 ),
               );
-            });
+            },
+          );
+        } else {
+          return Container();
+        }
       },
     );
   }
 
-  void deleteRecipe(MemoryRepository repository, Recipe recipe) async {
+  void deleteRecipe(Repository repository, Recipe recipe) async {
     if (recipe.id != null) {
-      // 1
       repository.deleteRecipeIngredients(recipe.id!);
-      // 2
       repository.deleteRecipe(recipe);
-      // 3
       setState(() {});
     } else {
       print('Recipe id is null');

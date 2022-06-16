@@ -5,18 +5,18 @@ import 'package:provider/provider.dart';
 import '../../network/recipe_model.dart';
 import '../../data/models/models.dart';
 import '../../data/memory_repository.dart';
+import '../../data/repository.dart';
 
 import '../colors.dart';
 
 class RecipeDetails extends StatelessWidget {
-
   final Recipe recipe;
-  const RecipeDetails({Key? key, required this.recipe}) :
-        super(key: key);
+
+  const RecipeDetails({Key? key, required this.recipe}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final repository = Provider.of<MemoryRepository>(context);
+    final repository = Provider.of<Repository>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
@@ -64,11 +64,10 @@ class RecipeDetails extends StatelessWidget {
                   height: 16,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Chip(
-                    label: Text(getCalories(recipe.calories)),
-                  ),
-                ),
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Chip(
+                      label: Text(getCalories(recipe.calories)),
+                    )),
                 const SizedBox(
                   height: 16,
                 ),

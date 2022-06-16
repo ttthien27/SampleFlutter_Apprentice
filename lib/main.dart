@@ -7,11 +7,19 @@ import 'package:provider/provider.dart';
 import 'data/memory_repository.dart';
 import 'mock_service/mock_service.dart';
 
+import 'data/repository.dart';
+import 'network/recipe_service.dart';
+import 'network/service_interface.dart';
+import 'data/sqlite/sqlite_repository.dart';
+import 'data/moor/moor_repository.dart';
 
 Future<void> main() async {
   _setupLogging();
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  //final repository = SqliteRepository();
+  final repository = MoorRepository();
+  await repository.init();
+  runApp(MyApp(repository: repository));
 }
 
 void _setupLogging() {
@@ -22,27 +30,27 @@ void _setupLogging() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Repository repository;
+  const MyApp({Key? key, required this.repository}) : super(key:
+  key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      // 1
       providers: [
-        // 2
-        ChangeNotifierProvider<MemoryRepository>(
+        Provider<Repository>(
           lazy: false,
-          create: (_) => MemoryRepository(),
+          // 1
+          create: (_) => repository,
+// 2
+          dispose: (_, Repository repository) => repository.close(),
         ),
-        // 3
-        Provider(
-          // 4
-          create: (_) => MockService()..create(),
+        Provider<ServiceInterface>(
+          create: (_) => RecipeService.create(),
           lazy: false,
         ),
       ],
-      // 5
       child: MaterialApp(
         title: 'Recipes',
         debugShowCheckedModeBanner: false,
@@ -57,3 +65,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
