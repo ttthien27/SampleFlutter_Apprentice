@@ -1,24 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'fooderlich_theme.dart';
-import'home.dart';
+import 'models/models.dart';
+import 'navigation/app_router.dart';
+import 'navigation/app_route_parser.dart';
 
 void main() {
-  runApp(const Fooderlich());
+  runApp(
+    const Fooderlich(),
+  );
 }
 
-class Fooderlich extends StatelessWidget {
-  // 2
+class Fooderlich extends StatefulWidget {
   const Fooderlich({Key? key}) : super(key: key);
 
   @override
+  _FooderlichState createState() => _FooderlichState();
+}
+
+class _FooderlichState extends State<Fooderlich> {
+  final _groceryManager = GroceryManager();
+  final _profileManager = ProfileManager();
+  final _appStateManager = AppStateManager();
+  final routeParser = AppRouteParser();
+
+  late AppRouter _appRouter;
+
+  @override
+  void initState() {
+    _appRouter = AppRouter(
+      appStateManager: _appStateManager,
+      groceryManager: _groceryManager,
+      profileManager: _profileManager,
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = FooderlichTheme.dark();
-    // TODO: Apply Home widget
-    // 3
-    return MaterialApp(
-      theme: theme,
-      title: 'Fooderlich',
-      home: const Home(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => _groceryManager,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _profileManager,
+        ),
+        ChangeNotifierProvider(create: (context) => _appStateManager,),
+      ],
+      child: Consumer<ProfileManager>(
+        builder: (context, profileManager, child) {
+          ThemeData theme;
+          if (profileManager.darkMode) {
+            theme = FooderlichTheme.dark();
+          } else {
+            theme = FooderlichTheme.light();
+          }
+
+          return MaterialApp.router(
+            theme: theme,
+            title: 'Fooderlich',
+            backButtonDispatcher: RootBackButtonDispatcher(),
+            // 1
+            routeInformationParser: routeParser,
+            // 2
+            routerDelegate: _appRouter,
+          );
+        },
+      ),
     );
   }
 }
